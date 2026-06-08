@@ -1,0 +1,14 @@
+# Pre-commit hooks (Sprint-Zero task S0-3). These run the same checks the CI
+# pipeline enforces, shifting quality left to the moment of commit.
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff           # lint, including the NFR-2 import-boundary ban
+      - id: ruff-format    # formatting
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        additional_dependencies: ["cryptography==42.0.5"]
+        args: ["--strict"]

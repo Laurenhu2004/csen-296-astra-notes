@@ -1,0 +1,12 @@
+# Runtime dependencies (SEC-3: dependency hygiene).
+#
+# Every external dependency is pinned to an exact version and justified in writing.
+# Phase-1 baseline is a single dependency. Adding another requires a written
+# justification linked to a requirement ID and a lockfile review.
+#
+#   cryptography  ->  FR-4 / SEC-1 SecureNote encryption at rest
+#                     (Fernet = AES-128-CBC + HMAC-SHA256) with a scrypt-derived key.
+#
+# Note: the design baseline pins 42.0.5; the Fernet + scrypt APIs used here are stable
+# across 41.x/42.x, so the app also runs on an already-installed 41.x.
+cryptography==42.0.5

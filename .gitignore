@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local AstraNotes data store (never commit user notes / audit logs).
+# NB: do not add a bare `AstraNotes/` rule — on case-insensitive filesystems it would
+# also ignore the source package `src/astranotes/`. The store artifacts below suffice.
+*.db
+*.db-wal
+*.db-shm
+audit.log
+debug.log
+
+# OS
+.DS_Store
