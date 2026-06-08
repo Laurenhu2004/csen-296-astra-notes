@@ -1,0 +1,1 @@
+"""AstraNotes repository package."""
