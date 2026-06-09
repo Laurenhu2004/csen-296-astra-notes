@@ -13,9 +13,7 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
-# Local AstraNotes data store (never commit user notes / audit logs).
-# NB: do not add a bare `AstraNotes/` rule — on case-insensitive filesystems it would
-# also ignore the source package `src/astranotes/`. The store artifacts below suffice.
+# Local AstraNotes data store
 *.db
 *.db-wal
 *.db-shm

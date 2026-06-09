@@ -1,7 +1,0 @@
-# Development-only dependencies (not shipped at runtime; kept separate from
-# requirements.txt to keep the SEC-3 runtime footprint to a single package).
--r requirements.txt
-pytest==8.2.0
-ruff==0.4.4
-mypy==1.10.0
-pre-commit==3.7.0

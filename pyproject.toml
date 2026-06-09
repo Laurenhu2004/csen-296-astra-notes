@@ -11,11 +11,22 @@ requires-python = ">=3.12"
 # SEC-3 (dependency hygiene): exactly one runtime dependency, pinned and justified.
 # cryptography backs the SecureNote feature (FR-4 / SEC-1): Fernet authenticated
 # encryption + scrypt KDF. Everything else is Python stdlib (sqlite3, cmd, argparse,
-# tkinter, json, uuid, datetime).
+# tkinter, json, uuid, datetime). The exact version is pinned here and the full
+# transitive set is locked in uv.lock — that lockfile is the SEC-3 review surface.
 dependencies = ["cryptography==42.0.5"]
 
 [project.scripts]
 astranotes = "astranotes.__main__:main"
+
+# Development-only tools (not shipped at runtime; keeps the SEC-3 runtime footprint to a
+# single package). Installed by `uv sync`; excluded from the built wheel.
+[dependency-groups]
+dev = [
+    "pytest==8.2.0",
+    "ruff==0.4.4",
+    "mypy==1.10.0",
+    "pre-commit==3.7.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

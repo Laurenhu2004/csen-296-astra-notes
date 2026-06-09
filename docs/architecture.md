@@ -52,9 +52,10 @@ user-facing warning, not an oversight.
 
 ## ADR-4 — Single pinned dependency (SEC-3)
 
-**Decision.** `cryptography` is the only runtime dependency, pinned exactly. Everything
-else (storage, CLI, GUI, JSON, UUIDs) is standard library. New dependencies require a
-written justification tied to a requirement ID.
+**Decision.** `cryptography` is the only runtime dependency, pinned exactly in
+`pyproject.toml`; the full resolved tree is captured in `uv.lock` for reproducible,
+review-able installs. Everything else (storage, CLI, GUI, JSON, UUIDs) is standard library.
+New dependencies require a written justification tied to a requirement ID.
 
 ## Storage layout
 

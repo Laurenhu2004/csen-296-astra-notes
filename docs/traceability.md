@@ -17,7 +17,7 @@ that verifies it. File paths are relative to the repository root.
 | **NFR-2** MVC | `app.py` composition root; ruff ban in `pyproject.toml`; Views import only `NoteService` | `test_mvc_boundary.py` | ✅ |
 | **SEC-1** encrypt at rest | `EncryptionService` (scrypt + Fernet, per-note salt); SecureNote `body` stored blank | `test_secure_note.py::test_make_secure_encrypts_body_at_rest`, `test_search.py::test_locked_secure_body_not_searchable` | ✅ |
 | **SEC-2** graceful failure | `errors.py` typed errors; Views catch `AstraNotesError` and show a message; repo degrades on bad FTS / storage errors | `test_validation_service.py`, `test_note_service_create.py::test_empty_title_is_rejected_before_persist` | ✅ |
-| **SEC-3** dependency hygiene | `requirements.txt` (one pinned dep), justification in `pyproject.toml` | reviewed in CI | ✅ |
+| **SEC-3** dependency hygiene | one pinned runtime dep in `pyproject.toml` (`[project.dependencies]`), full transitive set locked in `uv.lock` | reviewed in CI | ✅ |
 | **SEC-4** audit log | `models/audit.py::AuditLogEntry`, `services/audit_log.py::AuditLogService.record` | `test_note_service_create.py::test_create_writes_audit_entry`, `test_secure_note.py::test_wrong_passphrase_raises_and_audits` | ✅ |
 
 ## Notes on partial / deferred items
