@@ -48,17 +48,14 @@ Models  Note · SecureNote · NoteKind · VersionEntry · AuditLogEntry
 ```
 
 The composition root (`src/astranotes/app.py`) is the only place that wires concrete
-services together; Views receive a ready-built `NoteService`. See
-[`docs/architecture.md`](docs/architecture.md) and
-[`docs/traceability.md`](docs/traceability.md).
+services together; Views receive a ready-built `NoteService`. The design rationale and
+requirement mapping live in [`artifacts/ArchitectureDecisionLog.pdf`](artifacts/ArchitectureDecisionLog.pdf)
+and [`artifacts/TraceabilityMatrix.pdf`](artifacts/TraceabilityMatrix.pdf).
 
 **Stack:** Python 3.12 · SQLite + FTS5 (stdlib `sqlite3`) · `cryptography` (Fernet +
 scrypt) · stdlib `cmd`/`argparse` (CLI) · stdlib `tkinter` (GUI). No ORM, no web
-framework — every other capability is standard library (SEC-3).
-
-> Compatibility note: the design baseline pins Python 3.12 / `cryptography==42.0.5`. The
-> code uses only APIs available from 3.11 and `cryptography` 41.x, so it also runs as-is
-> on an existing 3.11 environment.
+framework — every other capability is standard library (SEC-3). `uv` provisions the pinned
+Python 3.12 automatically (see Setup), so no system Python is required.
 
 ---
 
@@ -120,10 +117,25 @@ all of the above on push/PR (`.github/workflows/ci.yml`).
 src/astranotes/      application source (models / repository / services / view / plugins)
 tests/               pytest suite (+ tests/perf for the NFR-1 spike)
 tools/seed.py        synthetic-note generator for the performance spike
-docs/                architecture, requirements, traceability, and SDLC artifacts
-prompts/             AI session logs — what was kept / refined / rejected
+artifacts/           the quarter's SDLC submissions as PDFs (requirements, UML, ADR,
+                     backlog, traceability, DoD, test improvement log) +
+                     SECURITY-AND-OPERATIONS.md (security / deployment / maintenance notes)
+DEMO_SCRIPT.md       ~5-minute video walkthrough — what to say and what to run
 pyproject.toml       project metadata, pinned runtime dep, dev group, tool config
 uv.lock              fully resolved dependency lockfile (reproducible installs, SEC-3)
-DOD.md               Definition of Done applied to every artifact
+.python-version      pinned interpreter (3.12) uv selects automatically
 ```
-x
+
+See [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md) for the demo walkthrough and
+[`artifacts/SECURITY-AND-OPERATIONS.md`](artifacts/SECURITY-AND-OPERATIONS.md) for the
+security, deployment, and maintenance notes.
+
+## How AI was used
+
+I used GitHub Copilot across the quarter to draft requirements, UML, and code, then reviewed
+everything by hand against the prior artifacts and the Definition of Done. The rule was
+simple: AI drafts, I decide. Each submission in [`artifacts/`](artifacts/) has a short note
+on what I kept, refined, or rejected — e.g. tightening vague requirements into measurable
+ones, and rejecting a suggestion to add passphrase recovery because it would break the
+no-server-trust design. The code reflects the same discipline: every requirement maps to a
+test, and the MVC boundary is enforced by lint and a test rather than taken on faith.
