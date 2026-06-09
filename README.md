@@ -64,12 +64,19 @@ framework — every other capability is standard library (SEC-3).
 
 ## Setup
 
+This project uses [**uv**](https://docs.astral.sh/uv/) for environment and dependency
+management. Install it once (`curl -LsSf https://astral.sh/uv/install.sh | sh`), then:
+
 ```bash
 cd csen-296-astra-notes
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt            # runtime: cryptography only
-pip install -r requirements-dev.txt        # + pytest / ruff / mypy (for tests & checks)
+uv sync          # creates .venv, fetches Python 3.12, installs cryptography + dev tools + the package
 ```
+
+That single command provisions the pinned Python 3.12 (per `.python-version`), installs the
+exact locked dependency set from `uv.lock`, and installs the `astranotes` package itself in
+editable mode — so `python -m astranotes` and the `astranotes` console command resolve even
+though the source lives under `src/`. Run anything inside the environment with `uv run …`
+(no manual activation needed).
 
 Notes are stored under `~/AstraNotes/` by default. Override with `ASTRANOTES_HOME` to
 keep a demo or test run isolated:
@@ -81,8 +88,8 @@ export ASTRANOTES_HOME=$(mktemp -d)
 ## Usage
 
 ```bash
-python -m astranotes          # Phase-1 CLI shell
-python -m astranotes --gui    # Phase-2 Tkinter GUI (same NoteService backend)
+uv run python -m astranotes          # Phase-1 CLI shell
+uv run python -m astranotes --gui    # Phase-2 Tkinter GUI (same NoteService backend)
 ```
 
 CLI commands: `new`, `list`, `view <id>`, `edit <id>`, `delete <id>`, `trash`,
@@ -90,44 +97,16 @@ CLI commands: `new`, `list`, `view <id>`, `edit <id>`, `delete <id>`, `trash`,
 `revert <id> <version>`, `plugins`, `sync`, `quit`. (`<id>` accepts a short id prefix
 shown by `list`.)
 
----
-
-## Demo script (≈5 min video)
-
-A live walkthrough that exercises three meaningful workflows:
-
-```bash
-export ASTRANOTES_HOME=$(mktemp -d)
-python -m astranotes
-```
-
-1. **Create & search** — `new` a couple of notes, then `search` a keyword (FR-1, FR-8).
-2. **SecureNote round-trip** — `secure <id>` with a passphrase, `view <id>` (shows it's
-   locked), `unlock <id>` to reveal it, and show the ciphertext on disk:
-   ```bash
-   python -c "import sqlite3,os; c=sqlite3.connect(os.environ['ASTRANOTES_HOME']+'/store.db'); print(c.execute('select kind, body, length(encrypted_body) from notes').fetchall())"
-   ```
-   The secure row stores an empty `body` and non-zero ciphertext (SEC-1).
-3. **Version history** — `edit <id>` a note twice, `history <id>`, then `revert <id> 1`
-   to restore the original (recorded as a new version, never overwriting) (FR-6).
-
-Then show the GUI (`python -m astranotes --gui`) doing the same over one shared backend,
-and the performance spike:
-
-```bash
-ASTRANOTES_HOME=$(mktemp -d) python tools/seed.py 10000   # generate 10k notes
-pytest tests/perf -q                                      # search p95 < 100 ms (NFR-1)
-```
 
 ---
 
 ## Testing & quality gates
 
 ```bash
-pytest -q                 # unit + integration + MVC-boundary + CLI smoke (36 tests)
-pytest tests/perf -q      # NFR-1 latency spike (seeds 10k notes)
-ruff check src tests      # lint, incl. the NFR-2 View→repository/encryption import ban
-mypy src                  # strict typing
+uv run pytest -q                 # unit + integration + MVC-boundary + CLI smoke (37 tests)
+uv run pytest tests/perf -q      # NFR-1 latency spike (seeds 10k notes)
+uv run ruff check src tests      # lint, incl. the NFR-2 View→repository/encryption import ban
+uv run mypy src                  # strict typing
 ```
 
 Every test references the requirement IDs it covers (see headers in `tests/`). CI runs
@@ -143,13 +122,8 @@ tests/               pytest suite (+ tests/perf for the NFR-1 spike)
 tools/seed.py        synthetic-note generator for the performance spike
 docs/                architecture, requirements, traceability, and SDLC artifacts
 prompts/             AI session logs — what was kept / refined / rejected
+pyproject.toml       project metadata, pinned runtime dep, dev group, tool config
+uv.lock              fully resolved dependency lockfile (reproducible installs, SEC-3)
 DOD.md               Definition of Done applied to every artifact
 ```
-
-## How AI was used (with human oversight)
-
-AI assisted in drafting requirements, UML, and code slices; each draft was reviewed
-line-by-line against prior artifacts and the Definition of Done. The `prompts/` folder
-records representative sessions and what was **kept, refined, or rejected** — the
-critical-refinement discipline this course grades. See [`DOD.md`](DOD.md) and
-[`prompts/`](prompts/).
+x

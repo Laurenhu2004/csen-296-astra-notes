@@ -8,14 +8,18 @@ version = "0.1.0"
 description = "AstraNotes — a local-first, encrypted note-taking application (CSEN 296B-2 final project)."
 readme = "README.md"
 requires-python = ">=3.12"
-# SEC-3 (dependency hygiene): exactly one runtime dependency, pinned and justified.
-# cryptography backs the SecureNote feature (FR-4 / SEC-1): Fernet authenticated
-# encryption + scrypt KDF. Everything else is Python stdlib (sqlite3, cmd, argparse,
-# tkinter, json, uuid, datetime).
 dependencies = ["cryptography==42.0.5"]
 
 [project.scripts]
 astranotes = "astranotes.__main__:main"
+
+[dependency-groups]
+dev = [
+    "pytest==8.2.0",
+    "ruff==0.4.4",
+    "mypy==1.10.0",
+    "pre-commit==3.7.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -27,19 +31,13 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "TID"]
-# TID252 bans relative imports outright; we use intra-package relative imports by
-# convention. The TID rule we care about for NFR-2 is TID251 (banned-api), kept on.
 ignore = ["TID252"]
 
-# NFR-2 (MVC separation), enforced at lint time. The View layer must reach the
-# system only through NoteService; it may never import the persistence layer or the
-# encryption service. The static test in tests/test_mvc_boundary.py double-checks this.
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 "astranotes.repository".msg = "View layer must not import repository (NFR-2)."
 "astranotes.services.encryption".msg = "View layer must not import encryption (NFR-2 / SEC-1)."
 
 [tool.ruff.lint.per-file-ignores]
-# The composition root and the services/tests legitimately wire these modules together.
 "src/astranotes/app.py" = ["TID251"]
 "src/astranotes/services/*" = ["TID251"]
 "src/astranotes/repository/*" = ["TID251"]
@@ -51,8 +49,6 @@ python_version = "3.12"
 strict = true
 files = ["src"]
 
-# tkinter's bundled stubs leave some widget methods (e.g. Listbox.curselection)
-# untyped; relax only that one strictness flag for the GUI view module.
 [[tool.mypy.overrides]]
 module = "astranotes.view.gui"
 disallow_untyped_calls = false
