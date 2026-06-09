@@ -97,34 +97,6 @@ CLI commands: `new`, `list`, `view <id>`, `edit <id>`, `delete <id>`, `trash`,
 `revert <id> <version>`, `plugins`, `sync`, `quit`. (`<id>` accepts a short id prefix
 shown by `list`.)
 
----
-
-## Demo script (≈5 min video)
-
-A live walkthrough that exercises three meaningful workflows:
-
-```bash
-export ASTRANOTES_HOME=$(mktemp -d)
-uv run python -m astranotes
-```
-
-1. **Create & search** — `new` a couple of notes, then `search` a keyword (FR-1, FR-8).
-2. **SecureNote round-trip** — `secure <id>` with a passphrase, `view <id>` (shows it's
-   locked), `unlock <id>` to reveal it, and show the ciphertext on disk:
-   ```bash
-   uv run python -c "import sqlite3,os; c=sqlite3.connect(os.environ['ASTRANOTES_HOME']+'/store.db'); print(c.execute('select kind, body, length(encrypted_body) from notes').fetchall())"
-   ```
-   The secure row stores an empty `body` and non-zero ciphertext (SEC-1).
-3. **Version history** — `edit <id>` a note twice, `history <id>`, then `revert <id> 1`
-   to restore the original (recorded as a new version, never overwriting) (FR-6).
-
-Then show the GUI (`uv run python -m astranotes --gui`) doing the same over one shared
-backend, and the performance spike:
-
-```bash
-ASTRANOTES_HOME=$(mktemp -d) uv run python tools/seed.py 10000   # generate 10k notes
-uv run pytest tests/perf -q                                      # search p95 < 100 ms (NFR-1)
-```
 
 ---
 
@@ -154,11 +126,4 @@ pyproject.toml       project metadata, pinned runtime dep, dev group, tool confi
 uv.lock              fully resolved dependency lockfile (reproducible installs, SEC-3)
 DOD.md               Definition of Done applied to every artifact
 ```
-
-## How AI was used (with human oversight)
-
-AI assisted in drafting requirements, UML, and code slices; each draft was reviewed
-line-by-line against prior artifacts and the Definition of Done. The `prompts/` folder
-records representative sessions and what was **kept, refined, or rejected** — the
-critical-refinement discipline this course grades. See [`DOD.md`](DOD.md) and
-[`prompts/`](prompts/).
+x
