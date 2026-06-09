@@ -5,8 +5,7 @@ your own machine in a SQLite database, encrypts private notes at rest with a pas
 keeps a full version history of every note, and lets you search thousands of notes in
 milliseconds — all with a single third-party dependency.
 
-This repository is the final-project package for **CSEN 296B-2 (AI-Native SDLC)**. It
-contains both the **working application** and the **SDLC artifacts** developed across the
+This repository contains both the **working application** and the **SDLC artifacts** developed across the
 quarter (requirements → design → traceability → implementation → testing).
 
 ---
@@ -117,25 +116,14 @@ all of the above on push/PR (`.github/workflows/ci.yml`).
 src/astranotes/      application source (models / repository / services / view / plugins)
 tests/               pytest suite (+ tests/perf for the NFR-1 spike)
 tools/seed.py        synthetic-note generator for the performance spike
-artifacts/           the quarter's SDLC submissions as PDFs (requirements, UML, ADR,
+artifacts/           documents (requirements, UML, ADR,
                      backlog, traceability, DoD, test improvement log) +
                      SECURITY-AND-OPERATIONS.md (security / deployment / maintenance notes)
-DEMO_SCRIPT.md       ~5-minute video walkthrough — what to say and what to run
 pyproject.toml       project metadata, pinned runtime dep, dev group, tool config
 uv.lock              fully resolved dependency lockfile (reproducible installs, SEC-3)
 .python-version      pinned interpreter (3.12) uv selects automatically
 ```
 
-See [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md) for the demo walkthrough and
-[`artifacts/SECURITY-AND-OPERATIONS.md`](artifacts/SECURITY-AND-OPERATIONS.md) for the
-security, deployment, and maintenance notes.
-
 ## How AI was used
 
-I used GitHub Copilot across the quarter to draft requirements, UML, and code, then reviewed
-everything by hand against the prior artifacts and the Definition of Done. The rule was
-simple: AI drafts, I decide. Each submission in [`artifacts/`](artifacts/) has a short note
-on what I kept, refined, or rejected — e.g. tightening vague requirements into measurable
-ones, and rejecting a suggestion to add passphrase recovery because it would break the
-no-server-trust design. The code reflects the same discipline: every requirement maps to a
-test, and the MVC boundary is enforced by lint and a test rather than taken on faith.
+I used GitHub Copilot across the quarter to draft requirements, UML, and code, then reviewed everything by hand against the lab submissions and the Definition of Done. The AI would make drafts and I would review the output and decide what to keep or what to change. The code reflects that every requirement maps to a test, and the MVC boundary is enforced by lint and a test rather than taken on faith.
